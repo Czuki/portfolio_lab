@@ -30,5 +30,20 @@ class Donation(models.Model):
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField()
-    user = models.ForeignKey(User, default='Null', null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    # hug falcon
+    def total_donations(self):
+        """
+        Returns all-time total amount of donated containers and number of supported institutions
+        """
+        containers_count = 0
+        institutions = list()
+        donations = Donation.objects.all()
+        # sum() aggregate() annotate()
+        for donation in donations:
+            containers_count += donation.quantity
+            institutions.append(donation.institution)
 
+        institutions_count = len(set(institutions))
+
+        return containers_count, institutions_count
